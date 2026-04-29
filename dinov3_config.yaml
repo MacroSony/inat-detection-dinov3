@@ -24,3 +24,13 @@ model:
     batch_size: 4
     num_workers: 4
     tensorboard: true
+    class_names:
+      - Actinopterygii
+      - Amphibia
+      - Animalia
+      - Arachnida
+      - Aves
+      - Insecta
+      - Mammalia
+      - Mollusca
+      - Reptilia

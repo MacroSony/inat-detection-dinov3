@@ -5,6 +5,18 @@ import requests
 import tarfile
 from collections import defaultdict
 
+INAT_SUPERCATEGORIES = [
+    "Actinopterygii",
+    "Amphibia",
+    "Animalia",
+    "Arachnida",
+    "Aves",
+    "Insecta",
+    "Mammalia",
+    "Mollusca",
+    "Reptilia",
+]
+
 def download_and_unpack_annotations():
     os.makedirs("data", exist_ok=True)
     
@@ -80,6 +92,29 @@ def create_subset(json_path, output_json_path, samples_per_supercat=1000):
     print(f"Saved subset annotations to {output_json_path}")
     return filenames_to_extract
 
+def remap_categories_to_supercategories(json_path, output_json_path=None):
+    """Collapse iNaturalist species categories into contiguous supercategory IDs."""
+    with open(json_path, "r") as f:
+        data = json.load(f)
+
+    supercat_to_id = {name: idx for idx, name in enumerate(INAT_SUPERCATEGORIES)}
+    cat_to_supercat = {cat["id"]: cat["supercategory"] for cat in data["categories"]}
+
+    for ann in data["annotations"]:
+        supercat = cat_to_supercat[ann["category_id"]]
+        ann["category_id"] = supercat_to_id[supercat]
+
+    data["categories"] = [
+        {"id": idx, "name": name, "supercategory": "organism"}
+        for idx, name in enumerate(INAT_SUPERCATEGORIES)
+    ]
+
+    output_json_path = output_json_path or json_path
+    with open(output_json_path, "w") as f:
+        json.dump(data, f)
+
+    print(f"Remapped categories to {len(INAT_SUPERCATEGORIES)} supercategories in {output_json_path}")
+
 def stream_and_extract_tar(url, filenames_to_extract, extract_path="data/images"):
     # Create the output directory
     os.makedirs(extract_path, exist_ok=True)
@@ -125,6 +160,7 @@ if __name__ == "__main__":
     url = "https://ml-inat-competition-datasets.s3.amazonaws.com/2017/train_val_images.tar.gz"
     
     filenames = create_subset(train_json, train_out, samples_per_supercat=1000)
+    remap_categories_to_supercategories(train_out)
     
     print("\nStarting streaming extraction. This may take a while depending on your internet speed and where the files are in the archive...")
     stream_and_extract_tar(url, filenames)
