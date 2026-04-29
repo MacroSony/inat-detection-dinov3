@@ -1,5 +1,5 @@
 [submodule "rf-detr"]
-	path = rf-detr
+	path = rfdetr
 	url = https://github.com/roboflow/rf-detr.git
 [submodule "dinov3"]
 	path = dinov3
