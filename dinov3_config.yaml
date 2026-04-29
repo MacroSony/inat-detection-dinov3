@@ -1,0 +1,26 @@
+model:
+  model_config:
+    encoder: dinov3_vits16
+    out_feature_indexes: [2, 4, 5, 9]
+    dec_layers: 4
+    projector_scale: [P3, P4, P5]
+    hidden_dim: 256
+    patch_size: 16
+    num_windows: 2
+    sa_nheads: 8
+    ca_nheads: 16
+    dec_n_points: 2
+    num_queries: 300
+    num_select: 300
+    resolution: 640
+    positional_encoding_size: 40
+    num_classes: 9
+    segmentation_head: false
+  train_config:
+    dataset_file: roboflow
+    dataset_dir: rf_dataset
+    output_dir: output/dinov3_vits16
+    epochs: 50
+    batch_size: 4
+    num_workers: 4
+    tensorboard: true
