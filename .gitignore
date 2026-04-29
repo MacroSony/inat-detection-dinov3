@@ -4,3 +4,4 @@ models
 __pycache__
 .vscode
 rf_dataset
+lightning_logs

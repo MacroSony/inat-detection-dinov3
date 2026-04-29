@@ -1,6 +1,6 @@
 [submodule "rf-detr"]
 	path = rfdetr
-	url = https://github.com/roboflow/rf-detr.git
+	url = git@github.com:macrosony/rf-detr.git
 [submodule "dinov3"]
 	path = dinov3
 	url = https://github.com/facebookresearch/dinov3.git

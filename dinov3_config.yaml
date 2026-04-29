@@ -1,3 +1,6 @@
+trainer:
+  max_epochs: 50
+
 model:
   model_config:
     encoder: dinov3_vits16
@@ -21,7 +24,7 @@ model:
     dataset_dir: rf_dataset
     output_dir: output/dinov3_vits16
     epochs: 50
-    batch_size: 4
+    batch_size: 1
     num_workers: 4
     tensorboard: true
     class_names:
