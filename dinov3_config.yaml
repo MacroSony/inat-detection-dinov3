@@ -2,7 +2,7 @@ trainer:
   max_epochs: 50
   default_root_dir: output/dinov3_vits16
   accelerator: gpu
-  strategy: ddp
+  strategy: ddp_find_unused_parameters_true
   devices: auto
 
 model:
@@ -25,7 +25,7 @@ model:
     segmentation_head: false
   train_config:
     dataset_file: roboflow
-    dataset_dir: rf_dataset
+    dataset_dir: data
     output_dir: output/dinov3_vits16
     epochs: 50
     batch_size: 1

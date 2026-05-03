@@ -38,7 +38,7 @@ def download_and_unpack_annotations():
     if not os.path.exists("data/train_bboxes/train_2017_bboxes.json"):
         shutil.unpack_archive("data/train_bboxes.zip", "data/train_bboxes")
 
-def create_subset(json_path, output_json_path, samples_per_supercat=1000):
+def create_subset(json_path, output_json_path, samples_per_supercat=1000, image_prefix=None):
     print(f"Loading annotations from {json_path}...")
     with open(json_path, 'r') as f:
         data = json.load(f)
@@ -47,7 +47,6 @@ def create_subset(json_path, output_json_path, samples_per_supercat=1000):
     cat_to_supercat = {cat['id']: cat['supercategory'] for cat in data['categories']}
     
     # Group images by supercategory
-    # Note: an image might have multiple annotations, but we group by the primary annotation's supercat
     supercat_to_images = defaultdict(set)
     for ann in data['annotations']:
         cat_id = ann['category_id']
@@ -68,8 +67,17 @@ def create_subset(json_path, output_json_path, samples_per_supercat=1000):
     # Map image_id to its dict
     img_dict = {img['id']: img for img in data['images']}
         
-    # Filter images
-    new_images = [img_dict[img_id] for img_id in sampled_image_ids]
+    # Filter and potentially prefix image paths
+    new_images = []
+    filenames_to_extract = set()
+    for img_id in sampled_image_ids:
+        img = img_dict[img_id].copy()
+        raw_filename = img['file_name']
+        filenames_to_extract.add(raw_filename)
+        
+        if image_prefix:
+            img['file_name'] = os.path.join(image_prefix, raw_filename)
+        new_images.append(img)
     
     # Filter annotations
     new_annotations = [ann for ann in data['annotations'] if ann['image_id'] in sampled_image_ids]
@@ -86,8 +94,6 @@ def create_subset(json_path, output_json_path, samples_per_supercat=1000):
     with open(output_json_path, 'w') as f:
         json.dump(new_data, f)
         
-    # Build a set of exactly what the file_name is in the JSON
-    filenames_to_extract = set(img['file_name'] for img in new_images)
     print(f"\nTotal sampled images: {len(filenames_to_extract)}")
     print(f"Saved subset annotations to {output_json_path}")
     return filenames_to_extract
@@ -156,14 +162,14 @@ if __name__ == "__main__":
     
     # Process Train subset
     train_json = 'data/train_bboxes/train_2017_bboxes.json'
-    train_out = 'data/subset_train_bboxes.json'
-    train_filenames = create_subset(train_json, train_out, samples_per_supercat=1000)
+    train_out = 'data/train/_annotations.coco.json'
+    train_filenames = create_subset(train_json, train_out, samples_per_supercat=1000, image_prefix="../images")
     remap_categories_to_supercategories(train_out)
 
     # Process Validation subset
     val_json = 'data/val_bboxes/val_2017_bboxes.json'
-    val_out = 'data/subset_val_bboxes.json'
-    val_filenames = create_subset(val_json, val_out, samples_per_supercat=200)
+    val_out = 'data/valid/_annotations.coco.json'
+    val_filenames = create_subset(val_json, val_out, samples_per_supercat=200, image_prefix="../images")
     remap_categories_to_supercategories(val_out)
     
     # Combine filenames for a single extraction pass

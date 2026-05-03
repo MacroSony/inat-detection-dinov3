@@ -7,9 +7,9 @@ api.create_repo(repo_id=repo_id, repo_type="dataset", exist_ok=True)
 
 files_to_upload = [
     ("data/README.md", "README.md"),
-    ("data/subset_train_bboxes.json", "train_annotations.json"),
-    ("data/subset_val_bboxes.json", "val_annotations.json"),
-    ("data/images.tar.gz", "images.tar.gz"),
+    ("data/train/_annotations.coco.json", "train/_annotations.coco.json"),
+    ("data/valid/_annotations.coco.json", "valid/_annotations.coco.json"),
+    # ("data/images.tar.gz", "images.tar.gz"),
 ]
 
 for local_path, path_in_repo in files_to_upload:
