@@ -156,7 +156,7 @@ def build_custom_backbone_or_original(
     if name == "dinov3_vits16":
         print("Injecting Custom DINOv3 Backbone!")
         # We assume the weights are at this path
-        weights_path = "/home/bruhw/programming/inat-detection-dinov3/models/dinov3_vits16_pretrain_lvd1689m-08c60483.pth"
+        weights_path = "models/dinov3_vits16_pretrain_lvd1689m-08c60483.pth"
         return CustomDinoV3Backbone(
             weights_path=weights_path,
             out_channels=out_channels,

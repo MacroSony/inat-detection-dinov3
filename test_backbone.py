@@ -8,7 +8,7 @@ from rfdetr.utilities.tensors import NestedTensor
 apply_monkey_patch()
 
 # Initialize the custom backbone
-weights_path = "/home/bruhw/programming/inat-detection-dinov3/models/dinov3_vits16_pretrain_lvd1689m-08c60483.pth"
+weights_path = "models/dinov3_vits16_pretrain_lvd1689m-08c60483.pth"
 backbone = CustomDinoV3Backbone(weights_path=weights_path)
 
 # Create a dummy image tensor (1, 3, 640, 640)
