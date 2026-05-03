@@ -1,5 +1,5 @@
 trainer:
-  max_epochs: 50
+  max_epochs: 200
   default_root_dir: output/dinov3_vits16
   accelerator: gpu
   strategy: ddp_find_unused_parameters_true

@@ -1,0 +1,32 @@
+Bootstrap: docker
+From: nvcr.io/nvidia/pytorch:26.01-py3
+
+%files
+inat-detection-dinov3/dinov3/requirements.txt /opt/requirements-dinov3.txt
+inat-detection-dinov3/rfdetr /opt/rfdetr
+
+%post
+    # Update pip and build tools
+    pip install --upgrade pip cmake ninja
+
+    pip install -r /opt/requirements-dinov3.txt
+
+    cd /opt/rfdetr
+    pip install ".[train,loggers]"
+
+    pip install pytorch_lightning jsonargparse[signatures]>=4.27.7 albumentations
+    
+    # Cleanup
+    rm -rf /root/.cache/pip
+    rm -rf /opt/rfdetr /opt/requirements-dinov3.txt
+
+%environment
+    export LD_LIBRARY_PATH=/usr/local/cuda/compat/lib:$LD_LIBRARY_PATH
+    export PYTHONPATH=/workspace:/workspace/rfdetr/src:$PYTHONPATH
+
+    export TRITON_CACHE_DIR=/tmp/triton
+    export PYTORCH_KERNEL_CACHE_PATH=/tmp/pytorch_kernels
+
+%labels
+    Author ZihanW
+    Version inat-training-v0.1
