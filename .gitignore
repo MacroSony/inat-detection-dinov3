@@ -5,3 +5,6 @@ __pycache__
 .vscode
 rf_dataset
 lightning_logs
+test_outputs
+validation*
+*.zip

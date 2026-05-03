@@ -1,5 +1,9 @@
 trainer:
   max_epochs: 50
+  default_root_dir: output/dinov3_vits16
+  accelerator: gpu
+  strategy: ddp
+  devices: auto
 
 model:
   model_config:

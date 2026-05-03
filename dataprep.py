@@ -157,10 +157,20 @@ if __name__ == "__main__":
     # Process Train subset
     train_json = 'data/train_bboxes/train_2017_bboxes.json'
     train_out = 'data/subset_train_bboxes.json'
+    train_filenames = create_subset(train_json, train_out, samples_per_supercat=1000)
+    remap_categories_to_supercategories(train_out)
+
+    # Process Validation subset
+    val_json = 'data/val_bboxes/val_2017_bboxes.json'
+    val_out = 'data/subset_val_bboxes.json'
+    val_filenames = create_subset(val_json, val_out, samples_per_supercat=200)
+    remap_categories_to_supercategories(val_out)
+    
+    # Combine filenames for a single extraction pass
+    all_filenames = train_filenames.union(val_filenames)
+    
     url = "https://ml-inat-competition-datasets.s3.amazonaws.com/2017/train_val_images.tar.gz"
     
-    filenames = create_subset(train_json, train_out, samples_per_supercat=1000)
-    remap_categories_to_supercategories(train_out)
-    
+    print(f"\nTotal unique images to extract: {len(all_filenames)}")
     print("\nStarting streaming extraction. This may take a while depending on your internet speed and where the files are in the archive...")
-    stream_and_extract_tar(url, filenames)
+    stream_and_extract_tar(url, all_filenames)
